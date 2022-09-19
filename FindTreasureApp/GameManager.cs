@@ -50,5 +50,15 @@ namespace FindTreasureApp
                 return 'W';
             }
         }
+
+        public static void ResetScore()
+        {
+            Score = 0;
+        }
+        
+        public static void AddToScore(int s = 1)
+        {
+            Score += s;
+        }
     }
 }
