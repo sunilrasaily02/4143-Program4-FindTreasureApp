@@ -21,14 +21,25 @@ namespace FindTreasureApp
 
         private void OnAppShown(object sender, EventArgs e)
         {
-            int cellSize = 50;
-            int numColumns = 5;
-            int numRows = 5;
-            for (int c = 0; c < numColumns; c++)
-                for(int r = 0; r < numRows; r++)
-                    AddButton($"Button{c}{r}", new Point(c*cellSize, r*cellSize), new Size(cellSize, cellSize));
+            UpdateHeader();
+            CreateGrid(5, 5, new Size(50, 50));
+            UpdateFooter();
+        }
 
-            ClientSize = new Size(cellSize * numColumns, cellSize * numRows);
+        private void CreateGrid(int rows, int columns, Size sizeOfCells)
+        {
+            Size cellSize = sizeOfCells;
+            int numColumns = rows;
+            int numRows = columns;
+            int offsetY = gameHeader.Height;
+            for (int c = 0; c < numColumns; c++)
+                for (int r = 0; r < numRows; r++)
+                {
+                    Point point = new Point(c * cellSize.Width, (r * cellSize.Height)+offsetY);
+                    GridCell cell = new GridCell(AddButton($"Cell{c}{r}", point, cellSize), new Point(c, r));
+                }
+            ClientSize = new Size(cellSize.Width * numColumns, (cellSize.Height * numRows)+offsetY+gameFooter.Height);
+            GameManager.GenerateIslandLocation(numRows, numColumns);
         }
 
         private Button AddButton(string name, Point location, Size size)
@@ -44,18 +55,19 @@ namespace FindTreasureApp
                 ForeColor = Color.White,
         };
 
-            string text = GetTextForTooltip(button.Text[0]);
+            string text = DetermineTextForTooltip(button.Text[0]);
             toolTip1.SetToolTip(button, text);
 
             // Add a Button Click Event handler  
             button.Click += new EventHandler(GridButton_Click);
-
+    
             // Add Button to the Form. Placement of the Button  
             // will be based on the Location and Size of button  
             Controls.Add(button);
 
             return button;
         }
+        
 
         private void ReplaceButtonWithLabel(Button button)
         {
@@ -71,13 +83,18 @@ namespace FindTreasureApp
 
                 //label.BackColor = Color.Tan;
                 //label.ForeColor = Color.Black;
-                Text = "N"
+                Text = ""
             };
+            Point cellLocation = DetermineCellLocationFromPoint(label.Location, label.Size);
+            Debug.WriteLine($"LabelLocation: {label.Location}");
+            Debug.WriteLine($"Cell Location: {cellLocation}");
+            char hint = GameManager.DetermineIslandDirection(cellLocation);
 
-            string text = GetTextForTooltip(label.Text[0]);
+            label.Text += hint;
+
+            string text = DetermineTextForTooltip(hint);
+
             toolTip1.SetToolTip(label, text);
-
-            label.MouseHover += new EventHandler(Label_MouseHover);
             Controls.Add(label);
             Controls.Remove(button);
         }
@@ -85,14 +102,12 @@ namespace FindTreasureApp
         private void GridButton_Click(object sender, EventArgs e)
         {
             ReplaceButtonWithLabel(sender as Button);
+            GameManager.AddToScore();
+            scoreLabel.Text = $"Score: {GameManager.Score}";
+            UpdateHeader();
         }
 
-        private void Label_MouseHover(object sender, EventArgs e)
-        {
-            if (sender is Label) { }
-        }
-
-        private string GetTextForTooltip(char c)
+        private string DetermineTextForTooltip(char c)
         {
             switch (c)
             {
@@ -100,16 +115,41 @@ namespace FindTreasureApp
                     return "This is a water location, click to reveal a hint.";
                 case 'N':
                     return "The island is north of this location!";
-   
+                case 'S':
+                    return "The island is south of this location!";
+                case 'E':
+                    return "The island is east of this location!";
+                case 'W':
+                    return "The island is west of this location!";
+                case 'R':
+                    return "The island is on this row!!";
+                case 'C':
+                    return "The island is in this column!!";
+                case 'I':
+                    return $"Well Done! You've found the island in {GameManager.Score} turns!";
                 default:
                     Debug.WriteLine($"Character \'{c}\' not accounted for.");
                     return "Invalid Character";
             }
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private Point DetermineCellLocationFromPoint(Point point, Size size)
         {
+            int y = point.Y - gameHeader.Height;
+            return new Point(point.X/size.Width, y/size.Height);
+        }
 
+        private void UpdateHeader()
+        {
+            gameHeader.Size = new Size(ClientSize.Width, gameHeader.Height);
+            gameHeader.Location = new Point(0, 0);
+            scoreLabel.Location = new Point((gameHeader.Width - scoreLabel.Width) / 2, scoreLabel.Location.Y);
+        }
+
+        private void UpdateFooter()
+        {
+            gameFooter.Size = new Size(ClientSize.Width, gameFooter.Height);
+            gameFooter.Location = new Point(0, ClientSize.Height-gameFooter.Height);
         }
     }
 }

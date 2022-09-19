@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace FindTreasureApp
 {
-    internal class GridCell
+    public class GridCell
     {
-        Button button;
+        private Button button;
         public Point CellLocation { get; private set; }
-        GridCell(Button btn, Point loc)
+        public GridCell(Button btn, Point loc)
         {
             button = btn;
             CellLocation = loc;
