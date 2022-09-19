@@ -67,7 +67,6 @@ namespace FindTreasureApp
 
             return button;
         }
-        
 
         private void ReplaceButtonWithLabel(Button button)
         {
@@ -80,9 +79,6 @@ namespace FindTreasureApp
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = button.BackColor,
                 ForeColor = button.ForeColor,
-
-                //label.BackColor = Color.Tan;
-                //label.ForeColor = Color.Black;
                 Text = ""
             };
             Point cellLocation = DetermineCellLocationFromPoint(label.Location, label.Size);
