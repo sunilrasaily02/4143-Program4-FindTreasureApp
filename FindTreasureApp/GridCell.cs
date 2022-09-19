@@ -11,11 +11,11 @@ namespace FindTreasureApp
     internal class GridCell
     {
         Button button;
-        public Point GridLocation { get; private set; }
+        public Point CellLocation { get; private set; }
         GridCell(Button btn, Point loc)
         {
             button = btn;
-            GridLocation = loc;
+            CellLocation = loc;
         }
     }
 }
