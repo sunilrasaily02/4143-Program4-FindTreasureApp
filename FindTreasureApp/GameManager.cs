@@ -14,7 +14,9 @@ namespace FindTreasureApp
 
         public static void GenerateIslandLocation(int numRows, int numCols)
         {
-
+            Random randomizer = new Random();
+            islandLocation.X = randomizer.Next(numCols);
+            islandLocation.Y = randomizer.Next(numRows);
         }
 
         public static char DetermineIslandDirection(Point cellLocation)
