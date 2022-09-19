@@ -21,7 +21,9 @@ namespace FindTreasureApp
 
         private void OnAppShown(object sender, EventArgs e)
         {
-            CreateGrid(5,5, new Size(50, 50)); 
+            UpdateHeader();
+            CreateGrid(5, 5, new Size(50, 50));
+            UpdateFooter();
         }
 
         private void CreateGrid(int rows, int columns, Size sizeOfCells)
@@ -29,13 +31,14 @@ namespace FindTreasureApp
             Size cellSize = sizeOfCells;
             int numColumns = rows;
             int numRows = columns;
+            int offsetY = gameHeader.Height;
             for (int c = 0; c < numColumns; c++)
                 for (int r = 0; r < numRows; r++)
                 {
-                    Point point = new Point(c * cellSize.Width, r * cellSize.Height);
+                    Point point = new Point(c * cellSize.Width, (r * cellSize.Height)+offsetY);
                     GridCell cell = new GridCell(AddButton($"Cell{c}{r}", point, cellSize), new Point(c, r));
                 }
-            ClientSize = new Size(cellSize.Width * numColumns, cellSize.Height * numRows);
+            ClientSize = new Size(cellSize.Width * numColumns, (cellSize.Height * numRows)+offsetY+gameFooter.Height);
             GameManager.GenerateIslandLocation(numRows, numColumns);
         }
 
@@ -83,6 +86,8 @@ namespace FindTreasureApp
                 Text = ""
             };
             Point cellLocation = DetermineCellLocationFromPoint(label.Location, label.Size);
+            Debug.WriteLine($"LabelLocation: {label.Location}");
+            Debug.WriteLine($"Cell Location: {cellLocation}");
             char hint = GameManager.DetermineIslandDirection(cellLocation);
 
             label.Text += hint;
@@ -97,6 +102,9 @@ namespace FindTreasureApp
         private void GridButton_Click(object sender, EventArgs e)
         {
             ReplaceButtonWithLabel(sender as Button);
+            GameManager.AddToScore();
+            scoreLabel.Text = $"Score: {GameManager.Score}";
+            UpdateHeader();
         }
 
         private string DetermineTextForTooltip(char c)
@@ -127,7 +135,21 @@ namespace FindTreasureApp
 
         private Point DetermineCellLocationFromPoint(Point point, Size size)
         {
-            return new Point(point.X/size.Width, point.Y/size.Height);
+            int y = point.Y - gameHeader.Height;
+            return new Point(point.X/size.Width, y/size.Height);
+        }
+
+        private void UpdateHeader()
+        {
+            gameHeader.Size = new Size(ClientSize.Width, gameHeader.Height);
+            gameHeader.Location = new Point(0, 0);
+            scoreLabel.Location = new Point((gameHeader.Width - scoreLabel.Width) / 2, scoreLabel.Location.Y);
+        }
+
+        private void UpdateFooter()
+        {
+            gameFooter.Size = new Size(ClientSize.Width, gameFooter.Height);
+            gameFooter.Location = new Point(0, ClientSize.Height-gameFooter.Height);
         }
     }
 }
