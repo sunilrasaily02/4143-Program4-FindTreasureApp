@@ -17,8 +17,7 @@ namespace FindTreasureApp
         public FindTreasureApp()
   {
             InitializeComponent();
-            //aiufhsdijvcnaefrviysbn
-            //oisrehvuesna'foicm;iu
+          
         }
 
         private void OnAppShown(object sender, EventArgs e)
