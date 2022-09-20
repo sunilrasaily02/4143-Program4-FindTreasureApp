@@ -15,8 +15,9 @@ namespace FindTreasureApp
     public partial class FindTreasureApp : Form
     {
         public FindTreasureApp()
-        {
+  {
             InitializeComponent();
+            //hi
         }
 
         private void OnAppShown(object sender, EventArgs e)
