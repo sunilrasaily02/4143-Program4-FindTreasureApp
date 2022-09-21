@@ -22,9 +22,11 @@ namespace FindTreasureApp
 
         private void OnAppShown(object sender, EventArgs e)
         {
-            UpdateHeader();
-            CreateGrid(5, 5, new Size(50, 50));
-            UpdateFooter();
+            /*  UpdateHeader();
+              CreateGrid(5, 5, new Size(50, 50));
+              UpdateFooter();*/
+          //  ClientSize = groupBox1.Size;
+          //  groupBox1.Location = new Point(0, 0);
         }
 
         private void CreateGrid(int rows, int columns, Size sizeOfCells)
@@ -147,6 +149,30 @@ namespace FindTreasureApp
         {
             gameFooter.Size = new Size(ClientSize.Width, gameFooter.Height);
             gameFooter.Location = new Point(0, ClientSize.Height-gameFooter.Height);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FindTreasureApp_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadGame(object sender, EventArgs e)
+        {
+            GameScreen gameWindow = new GameScreen();
+
+            gameWindow.Show();
+        }
+
+        private void LoadHelp(object sender, EventArgs e)
+        {
+            HelpScreen helpWindow = new HelpScreen();
+
+            helpWindow.Show();
         }
     }
 }
