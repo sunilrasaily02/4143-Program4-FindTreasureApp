@@ -163,9 +163,22 @@ namespace FindTreasureApp
 
         private void LoadGame(object sender, EventArgs e)
         {
-            GameScreen gameWindow = new GameScreen();
 
-            gameWindow.Show();
+            int gridWidth = ValidateInput(textBoxX.Text);
+            int gridHeight = ValidateInput(textBoxY.Text);
+
+            if (gridWidth != -1 && gridHeight != -1)
+            {
+                UpdateHeader();
+                CreateGrid(gridWidth, gridHeight, new Size(50, 50));
+                UpdateFooter();
+                groupBox1.Visible = false;
+            }
+            else
+            {
+                //display message box saying invalid input
+            }
+
         }
 
         private void LoadHelp(object sender, EventArgs e)
@@ -174,5 +187,31 @@ namespace FindTreasureApp
 
             helpWindow.Show();
         }
-    }
-}
+
+        private void LoadRestart(object sender, EventArgs e)
+        {
+
+            
+        }
+
+        private int ValidateInput(string input, KeyPressEventArgs X)
+        {
+            int returnable = -1;
+
+            int numericValue;
+            bool isNumber = int.TryParse(input, out numericValue);
+
+            if (numericValue >= 1 && numericValue <= 15)
+                returnable = numericValue;
+
+            return returnable;
+        }
+
+            //make sure input is a int
+            //make sure input is 1-15 
+
+//returnable = input
+
+
+
+
